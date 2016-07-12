@@ -1,158 +1,23 @@
 # FarageBot
-tracer deja 
+You will need [discordgo](https://github.com/bwmarrin/discordgo).
 
-tracer cheers 
+This bot is a edited version of the [Airhorn](https://github.com/hammerandchisel/airhornbot) bot with the server elements removed and desgined to run on single server. 
 
-tracer cavalry 
+**To Get**
 
-torb turret 
+```
+go get github.com/LetsOne/FarageBot/bot
 
-mei amazing 
+go install github.com/LetsOne/FarageBot/bot
+```
 
-mcree noon
+**To Run**
 
-kys 
+```
+bot - t "MY_BOT_ACCOUNT_TOKEN" 
+```
+You will need to move the "audio" folder into the same place as the binary.
 
-hey 
+**Commands , all starting with !** 
 
-dva winky 
-
-dva lol 
-
-dva leet 
-
-dva ree
-
-dva gg
-
-donethis
-
-bag
-
-wow
-
-woaw
-
-profanity
-
-disaster
-
-noballs
-
-try
-
-whatcha
-
-anotha
-
-suh
-
-wake
-
-stfu
-
-slayer
-
-bag skywrath
-
-bag spiritbreaker
-
-bag orge
-
-bag phoenix
-
-bag skeletonking
-
-bag tree
-
-bag timber
-
-bag jakiro
-
-bag legion
-
-bag magnus
-
-bag medusa
-
-bag meepo
-
-bag omniknight
-
-bag nyx
-
-bag oracle
-
-bag io
-
-bag abaddon
-
-bag bristle
-
-bag centaur
-
-bag earthspirit
-
-bag eldertitan
-
-dota pudgefirstblood
-
-dota rikiredundant
-
-dota sandkingno
-
-dota tinkerhazard
-
-dota viperholyshit
-
-dota windcouldbeworse
-
-dota eldertitangetoff
-
-dota gyroholyshit
-
-dota kotlmint
-
-dota kotlthereitgoes
-
-dota kotlgandalf
-
-dota lionbeentohellandbacktohellandback
-
-dota lunaabsolutelynot
-
-dota lunapirate
-
-dota lunailluminate
-
-dota necrodirtybitch
-
-dota orgepureskill
-
-dota orgeskillshot
-
-dota orgesmarter
-
-dota orgehittheroad
-
-dota qopouch
-
-dota ababbdonohnoyoudidnt
-
-dota blinkdaggerrrrrr
-
-dota brewmasterbarrel
-
-dota bristleugly
-
-dota bastionfaceamother
-
-dota spreslove
-
-dota sphlhf
-
-dota spdiplomatic
-
-dota spbread
-
-dota spdota
+http://pastebin.com/ZKuJzhGF
