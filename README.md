@@ -20,4 +20,4 @@ You will need to move the "audio" folder into the same place as the binary.
 
 **Commands , all starting with !** 
 
-http://pastebin.com/ZKuJzhGF
+http://pastebin.com/9xN5MxfT
