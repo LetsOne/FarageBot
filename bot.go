@@ -174,12 +174,26 @@ var BAG *SoundCollection = &SoundCollection{
 	},
 	Sounds: []*Sound{
 		createSound("skywrath", 10, 250),
-		createSound("earthspirt", 50, 250),
+		createSound("spiritbreaker", 50, 250),
 		createSound("orge", 50, 250),
 		createSound("phoenix", 50, 250),
 		createSound("skeletonking", 50, 250),
 		createSound("tree", 50, 250),
 		createSound("timber", 50, 250),
+		createSound("jakiro", 50, 250),
+		createSound("legion", 50, 250),
+		createSound("magnus", 50, 250),
+		createSound("medusa", 50, 250),
+		createSound("meepo", 50, 250),
+		createSound("omniknight", 50, 250),
+		createSound("nyx", 50, 250),
+		createSound("oracle", 50, 250),
+		createSound("io", 50, 250),
+		createSound("abaddon", 50, 250),
+		createSound("centaur", 50, 250),
+		createSound("earthspirit", 50, 250),
+		createSound("eldertitan", 50, 250),
+
 	},
 }
 
@@ -283,6 +297,57 @@ var WAKE *SoundCollection = &SoundCollection{
 	},
 }
 
+var SLAYER *SoundCollection = &SoundCollection{
+	Prefix: "slayer",
+	Commands: []string{
+		"!slayer",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
+var DOTA *SoundCollection = &SoundCollection{
+	Prefix: "dota",
+	Commands: []string{
+		"!dota",
+	},
+	Sounds: []*Sound{
+		createSound("pudgefirstblood", 50, 250),
+		createSound("rikiredundant", 50, 250),
+		createSound("sandkingno", 50, 250),
+		createSound("tinkerhazard", 50, 250),
+		createSound("viperholyshit", 50, 250),
+		createSound("windcouldbeworse", 50, 250),
+		createSound("eldertitangetoff", 50, 250),
+		createSound("gyroholyshit", 50, 250),
+		createSound("kotlmint", 50, 250),
+		createSound("kotlthereitgoes", 50, 250),
+		createSound("kotlgandalf", 50, 250),
+		createSound("lionbeentohellandbacktohellandback", 50, 250),
+		createSound("lunaabsolutelynot", 50, 250),
+		createSound("lunapirate", 50, 250),
+		createSound("lunailluminate", 50, 250),
+		createSound("necrodirtybitch", 50, 250),
+		createSound("orgepureskill", 50, 250),
+		createSound("orgeskillshot", 50, 250),
+		createSound("orgesmarter", 50, 250),
+		createSound("orgehittheroad", 50, 250),
+		createSound("qopouch", 1, 250),
+		createSound("ababbdonohnoyoudidnt", 50, 250),
+		createSound("blinkdaggerrrrrr", 50, 250),
+		createSound("brewmasterbarrel", 50, 250),
+		createSound("bristleugly", 50, 250),
+		createSound("bastionfaceamother", 50, 250),
+		createSound("spreslove", 50, 250),
+		createSound("sphlhf", 50, 250),
+		createSound("spdiplomatic", 50, 250),
+		createSound("dota_spbread", 1, 250),
+		createSound("spdota", 50, 250),
+	},
+}
+
+
 var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	KILLYOURSELF,
 	KHALED,
@@ -304,6 +369,8 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	STFU,
 	SUH,
 	WAKE,
+	SLAYER,
+	DOTA,
 
 }
 
