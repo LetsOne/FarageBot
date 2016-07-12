@@ -267,15 +267,15 @@ var NOBALLS *SoundCollection = &SoundCollection{
 	},
 }
 
-var STFU *SoundCollection = &SoundCollection{
-	Prefix: "stfu",
-	Commands: []string{
-		"!stfu",
-	},
-	Sounds: []*Sound{
-		createSound("one", 50, 250),
-	},
-}
+//var STFU *SoundCollection = &SoundCollection{
+//	Prefix: "stfu",
+//	Commands: []string{
+//		"!stfu",
+//	},
+//	Sounds: []*Sound{
+//		createSound("one", 50, 250),
+//	},
+//}
 
 var SUH *SoundCollection = &SoundCollection{
 	Prefix: "suh",
@@ -342,7 +342,7 @@ var DOTA *SoundCollection = &SoundCollection{
 		createSound("spreslove", 50, 250),
 		createSound("sphlhf", 50, 250),
 		createSound("spdiplomatic", 50, 250),
-		createSound("dota_spbread", 1, 250),
+		createSound("spbread", 1, 250),
 		createSound("spdota", 50, 250),
 	},
 }
