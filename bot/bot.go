@@ -267,16 +267,6 @@ var NOBALLS *SoundCollection = &SoundCollection{
 	},
 }
 
-//var STFU *SoundCollection = &SoundCollection{
-//	Prefix: "stfu",
-//	Commands: []string{
-//		"!stfu",
-//	},
-//	Sounds: []*Sound{
-//		createSound("one", 50, 250),
-//	},
-//}
-
 var SUH *SoundCollection = &SoundCollection{
 	Prefix: "suh",
 	Commands: []string{
@@ -356,7 +346,6 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	TRY,
 	WHATCHA,
 	NOBALLS,
-	STFU,
 	SUH,
 	WAKE,
 	DOTA,
@@ -656,8 +645,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 		return
 	}
-	deleteID := m.ID
-	s.ChannelMessageDelete(channel.ID, deleteID)
+
+	if m.Content[0] == '!' {
+		deleteID := m.ID
+		s.ChannelMessageDelete(channel.ID, deleteID)
+	}
 
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
