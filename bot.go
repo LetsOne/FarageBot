@@ -601,7 +601,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	deleteID := m.ID
-	added s.ChannelMessageDelete(channel.ID, channel.deleteID)
+	s.ChannelMessageDelete(channel.ID, deleteID)
 
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
