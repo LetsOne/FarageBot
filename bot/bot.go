@@ -297,16 +297,6 @@ var WAKE *SoundCollection = &SoundCollection{
 	},
 }
 
-var SLAYER *SoundCollection = &SoundCollection{
-	Prefix: "slayer",
-	Commands: []string{
-		"!slayer",
-	},
-	Sounds: []*Sound{
-		createSound("one", 50, 250),
-	},
-}
-
 var DOTA *SoundCollection = &SoundCollection{
 	Prefix: "dota",
 	Commands: []string{
@@ -369,7 +359,6 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	STFU,
 	SUH,
 	WAKE,
-	SLAYER,
 	DOTA,
 
 }
