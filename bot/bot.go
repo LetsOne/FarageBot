@@ -608,10 +608,7 @@ func utilGetMentioned(s *discordgo.Session, m *discordgo.MessageCreate) *discord
 
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || (m.Content[0] != '!' && len(m.Mentions) < 1) {
-		if m.Content == '?commands' {
-			s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
 		return
-		}		
 	}
 
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
@@ -636,17 +633,10 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	// If this is a mention, it should come from the owner (otherwise we don't care)
-	if len(m.Mentions) > 0 && m.Author.ID == OWNER && len(parts) > 0 {
-		mentioned := false
-		for _, mention := range m.Mentions {
-			mentioned = (mention.ID == s.State.Ready.User.ID)
-			if mentioned {
-				break
-			}
-		}
 
-		return
+	if m.Content == "!Help" {
+		dm, _ := s.UserChannelCreate(UserID)
+		s.ChannelMessageSend(dm.id, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
 	if m.Content[0] == '!' {
