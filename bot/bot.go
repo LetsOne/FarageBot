@@ -608,7 +608,10 @@ func utilGetMentioned(s *discordgo.Session, m *discordgo.MessageCreate) *discord
 
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || (m.Content[0] != '!' && len(m.Mentions) < 1) {
+		if m.Content == '?commands' {
+			s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
 		return
+		}		
 	}
 
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
