@@ -26,9 +26,6 @@ var (
 	// Sound encoding settings
 	BITRATE        = 128
 	MAX_QUEUE_SIZE = 3
-
-	// Owner
-	OWNER string
 )
 
 // Play represents an individual use of the !airhorn command
@@ -551,11 +548,6 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	// Play the sound
 	play.Sound.Play(vc)
 
-	// If this is chained, play the chained sound
-	if play.Next != nil {
-		playSound(play.Next, vc)
-	}
-
 	// If there is another song in the queue, recurse and play that
 	if len(queues[play.GuildID]) > 0 {
 		play := <-queues[play.GuildID]
@@ -596,18 +588,8 @@ func scontains(key string, options ...string) bool {
 	return false
 }
 
-
-func utilGetMentioned(s *discordgo.Session, m *discordgo.MessageCreate) *discordgo.User {
-	for _, mention := range m.Mentions {
-		if mention.ID != s.State.Ready.User.ID {
-			return mention
-		}
-	}
-	return nil
-}
-
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(m.Content) <= 0 || (m.Content[0] != '!' && len(m.Mentions) < 1) {
+	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
 	}
 
@@ -670,8 +652,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 func main() {
 	var (
 		Token      = flag.String("t", "", "Discord Authentication Token")
-//		Shard      = flag.String("s", "", "Shard ID")
-//		ShardCount = flag.String("c", "", "Number of shards")
 		Owner      = flag.String("o", "", "Owner ID")
 		err        error
 	)
@@ -697,14 +677,6 @@ func main() {
 		return
 	}
 
-	// Set sharding info
-//	discord.ShardID, _ = strconv.Atoi(*Shard)
-//	discord.ShardCount, _ = strconv.Atoi(*ShardCount)
-
-//	if discord.ShardCount <= 0 {
-//		discord.ShardCount = 1
-//	}
-
 	discord.AddHandler(onReady)
 	discord.AddHandler(onGuildCreate)
 	discord.AddHandler(onMessageCreate)
@@ -718,7 +690,7 @@ func main() {
 	}
 
 	// We're running!
-	log.Info("AIRHORNBOT is ready to horn it up.")
+	log.Info("FarageBot has is up!")
 
 	// Wait for a signal to quit
 	c := make(chan os.Signal, 1)
