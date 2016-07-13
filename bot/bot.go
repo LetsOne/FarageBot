@@ -634,7 +634,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 
-	if m.Content == "!Help" {
+	if m.Content == "!help" {
 		s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
