@@ -622,10 +622,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
-	if m.Content[0] == '!' {
-		deleteID := m.ID
-		s.ChannelMessageDelete(channel.ID, deleteID)
+	deleteID := m.ID
+	s.ChannelMessageDelete(channel.ID, deleteID)
+	
 	}
+
 
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
