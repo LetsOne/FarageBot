@@ -190,6 +190,7 @@ var BAG *SoundCollection = &SoundCollection{
 		createSound("centaur", 50, 250),
 		createSound("earthspirit", 50, 250),
 		createSound("eldertitan", 50, 250),
+		createSound("bristle", 50, 250),
 
 	},
 }
@@ -560,6 +561,7 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	delete(queues, play.GuildID)
 	return nil
 }
+
 
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
 	log.Info("Recieved READY payload")
