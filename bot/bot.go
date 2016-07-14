@@ -556,9 +556,6 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 		return nil
 	}
 
-	// If the queue is empty, delete it
-	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
-	delete(queues, play.GuildID)
 	return nil
 }
 
@@ -619,6 +616,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 
 	if m.Content == "!help" {
+		dm, _ := session.UserChannelCreate("user id")
+		session.ChannelMessageSend(dm.id, "content")
 		s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
