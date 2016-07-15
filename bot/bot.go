@@ -65,6 +65,28 @@ type Sound struct {
 	buffer [][]byte
 }
 
+type Message struct {
+    ID              string        `json:"id"`
+    ChannelID       string        `json:"channel_id"`
+    Content         string        `json:"content"`
+    Timestamp       string        `json:"timestamp"`
+    EditedTimestamp string        `json:"edited_timestamp"`
+    Tts             bool          `json:"tts"`
+    MentionEveryone bool          `json:"mention_everyone"`
+    Author          *User         `json:"author"`
+}
+
+type User struct {
+    ID            string `json:"id"`
+    Email         string `json:"email"`
+    Username      string `json:"username"`
+    Avatar        string `json:"Avatar"`
+    Discriminator string `json:"discriminator"`
+    Token         string `json:"token"`
+    Verified      bool   `json:"verified"`
+    Bot           bool   `json:"bot"`
+}
+
 // Array of all the sounds we have
 
 var KHALED *SoundCollection = &SoundCollection{
@@ -614,8 +636,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	u *Message.Author
-
+	u := message.Author
 	if m.Content == "!help" {
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
@@ -624,7 +645,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
 	
-	}
+
 
 
 	// Find the collection for the command we got
@@ -654,14 +675,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 func main() {
 	var (
 		Token      = flag.String("t", "", "Discord Authentication Token")
-		Owner      = flag.String("o", "", "Owner ID")
 		err        error
 	)
 	flag.Parse()
-
-	if *Owner != "" {
-		OWNER = *Owner
-	}
 
 	// Preload all the sounds
 	log.Info("Preloading sounds...")
