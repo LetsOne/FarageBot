@@ -692,7 +692,7 @@ func main() {
 	}
 
 	// We're running!
-	log.Info("FarageBot has is up!")
+	log.Info("FarageBot is up!")
 
 	// Wait for a signal to quit
 	c := make(chan os.Signal, 1)
