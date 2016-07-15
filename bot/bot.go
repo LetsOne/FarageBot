@@ -551,6 +551,11 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
     // If the queue is empty, delete it
  	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
  	delete(queues, play.GuildID)
+
+
+ 	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+
+ 	
 	return nil
 }
 
@@ -606,6 +611,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
+	
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
