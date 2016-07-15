@@ -8,7 +8,6 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
-//	"strconv"
 	"strings"
 	"time"
 
@@ -28,18 +27,15 @@ var (
 	MAX_QUEUE_SIZE = 3
 )
 
-// Play represents an individual use of the !airhorn command
+// Play represents an individual use of a command
 type Play struct {
 	GuildID   string
 	ChannelID string
 	UserID    string
 	Sound     *Sound
 
-	// The next play to occur after this, only used for chaining sounds like anotha
+	// The next play to occur after this used for chaining sounds
 	Next *Play
-
-	// If true, this was a forced play using a specific airhorn sound name
-	Forced bool
 }
 
 type SoundCollection struct {
@@ -325,7 +321,6 @@ var DOTA *SoundCollection = &SoundCollection{
 	},
 }
 
-
 var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	KILLYOURSELF,
 	KHALED,
@@ -474,13 +469,11 @@ func createPlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollect
 		ChannelID: channel.ID,
 		UserID:    user.ID,
 		Sound:     sound,
-		Forced:    true,
 	}
 
 	// If we didn't get passed a manual sound, generate a random one
 	if play.Sound == nil {
 		play.Sound = coll.Random()
-		play.Forced = false
 	}
 
 	// If the collection is a chained one, set the next sound
@@ -490,7 +483,6 @@ func createPlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollect
 			ChannelID: play.ChannelID,
 			UserID:    play.UserID,
 			Sound:     coll.ChainWith.Random(),
-			Forced:    play.Forced,
 		}
 	}
 
@@ -518,7 +510,6 @@ func enqueuePlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollec
 	}
 }
 
-//test
 // Play a sound
 func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	log.WithFields(log.Fields{
@@ -555,27 +546,17 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 		playSound(play, vc)
 		return nil
 	}
-
+    
+    // If the queue is empty, delete it
+ 	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
+ 	delete(queues, play.GuildID)
 	return nil
 }
 
 
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
 	log.Info("Recieved READY payload")
-	s.UpdateStatus(0, "Champions of Regnum")
-}
-
-func onGuildCreate(s *discordgo.Session, event *discordgo.GuildCreate) {
-	if event.Guild.Unavailable != nil {
-		return
-	}
-
-	for _, channel := range event.Guild.Channels {
-		if channel.ID == event.Guild.ID {
-			s.ChannelMessageSend(channel.ID, "**AIRHORN BOT READY FOR HORNING. TYPE `!AIRHORN` WHILE IN A VOICE CHANNEL TO ACTIVATE**")
-			return
-		}
-	}
+	s.UpdateStatus(0, "Fuck the EU")
 }
 
 func scontains(key string, options ...string) bool {
@@ -619,17 +600,13 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
-
+    
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
-	
-
-
-
+    
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
 		if scontains(parts[0], coll.Commands...) {
-
 			// If they passed a specific sound effect, find and select that (otherwise play nothing)
 			var sound *Sound
 			if len(parts) > 1 {
@@ -638,12 +615,10 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 						sound = s
 					}
 				}
-
 				if sound == nil {
 					return
 				}
 			}
-
 			go enqueuePlay(m.Author, guild, coll, sound)
 			return
 		}
