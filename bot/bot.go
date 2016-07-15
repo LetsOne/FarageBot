@@ -551,11 +551,7 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
     // If the queue is empty, delete it
  	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
  	delete(queues, play.GuildID)
-
-
- 	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
-
- 	
+	
 	return nil
 }
 
