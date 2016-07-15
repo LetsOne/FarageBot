@@ -594,13 +594,15 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}).Warning("Failed to grab guild")
 		return
 	}
-
+    
+    //Sends a direct message with the list of possible commands
 	u := m.Author
 	if m.Content == "!help" {
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
     
+    //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
     
@@ -647,7 +649,8 @@ func main() {
 		}).Fatal("Failed to create discord session")
 		return
 	}
-
+    
+    //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onGuildCreate)
 	discord.AddHandler(onMessageCreate)
