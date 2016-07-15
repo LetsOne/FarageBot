@@ -26,9 +26,6 @@ var (
 	// Sound encoding settings
 	BITRATE        = 128
 	MAX_QUEUE_SIZE = 3
-
-	// Owner
-	OWNER string
 )
 
 // Play represents an individual use of the !airhorn command
@@ -193,6 +190,7 @@ var BAG *SoundCollection = &SoundCollection{
 		createSound("centaur", 50, 250),
 		createSound("earthspirit", 50, 250),
 		createSound("eldertitan", 50, 250),
+		createSound("bristle", 50, 250),
 
 	},
 }
@@ -520,7 +518,7 @@ func enqueuePlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollec
 	}
 }
 
-
+//test
 // Play a sound
 func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	log.WithFields(log.Fields{
@@ -551,11 +549,6 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	// Play the sound
 	play.Sound.Play(vc)
 
-	// If this is chained, play the chained sound
-	if play.Next != nil {
-		playSound(play.Next, vc)
-	}
-
 	// If there is another song in the queue, recurse and play that
 	if len(queues[play.GuildID]) > 0 {
 		play := <-queues[play.GuildID]
@@ -563,11 +556,9 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 		return nil
 	}
 
-	// If the queue is empty, delete it
-	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
-	delete(queues, play.GuildID)
 	return nil
 }
+
 
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
 	log.Info("Recieved READY payload")
@@ -596,18 +587,8 @@ func scontains(key string, options ...string) bool {
 	return false
 }
 
-
-func utilGetMentioned(s *discordgo.Session, m *discordgo.MessageCreate) *discordgo.User {
-	for _, mention := range m.Mentions {
-		if mention.ID != s.State.Ready.User.ID {
-			return mention
-		}
-	}
-	return nil
-}
-
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(m.Content) <= 0 || (m.Content[0] != '!' && len(m.Mentions) < 1) {
+	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
 	}
 
@@ -633,15 +614,17 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-
-	if m.Content == "!Help" {
-		s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
+	u := m.Author
+	if m.Content == "!help" {
+		dm, _ := s.UserChannelCreate(u.ID)
+		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
-	if m.Content[0] == '!' {
-		deleteID := m.ID
-		s.ChannelMessageDelete(channel.ID, deleteID)
-	}
+	deleteID := m.ID
+	s.ChannelMessageDelete(channel.ID, deleteID)
+	
+
+
 
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
@@ -670,16 +653,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 func main() {
 	var (
 		Token      = flag.String("t", "", "Discord Authentication Token")
-//		Shard      = flag.String("s", "", "Shard ID")
-//		ShardCount = flag.String("c", "", "Number of shards")
-		Owner      = flag.String("o", "", "Owner ID")
 		err        error
 	)
 	flag.Parse()
-
-	if *Owner != "" {
-		OWNER = *Owner
-	}
 
 	// Preload all the sounds
 	log.Info("Preloading sounds...")
@@ -697,14 +673,6 @@ func main() {
 		return
 	}
 
-	// Set sharding info
-//	discord.ShardID, _ = strconv.Atoi(*Shard)
-//	discord.ShardCount, _ = strconv.Atoi(*ShardCount)
-
-//	if discord.ShardCount <= 0 {
-//		discord.ShardCount = 1
-//	}
-
 	discord.AddHandler(onReady)
 	discord.AddHandler(onGuildCreate)
 	discord.AddHandler(onMessageCreate)
@@ -718,7 +686,7 @@ func main() {
 	}
 
 	// We're running!
-	log.Info("AIRHORNBOT is ready to horn it up.")
+	log.Info("FarageBot is up!")
 
 	// Wait for a signal to quit
 	c := make(chan os.Signal, 1)
