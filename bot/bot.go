@@ -614,11 +614,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	u *Message.Author
 
 	if m.Content == "!help" {
-		dm, _ := session.UserChannelCreate("user id")
-		session.ChannelMessageSend(dm.id, "content")
-		s.ChannelMessageSend(channel.ID, "Commands: http://pastebin.com/9xN5MxfT")
+		dm, _ := s.UserChannelCreate(u.ID)
+		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
 
 	deleteID := m.ID
