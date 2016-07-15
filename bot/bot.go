@@ -555,7 +555,10 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 		playSound(play, vc)
 		return nil
 	}
-
+    
+    // If the queue is empty, delete it
+ 	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
+ 	delete(queues, play.GuildID)
 	return nil
 }
 
