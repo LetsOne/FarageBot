@@ -652,7 +652,6 @@ func main() {
     
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
-	discord.AddHandler(onGuildCreate)
 	discord.AddHandler(onMessageCreate)
 
 	err = discord.Open()
