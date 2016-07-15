@@ -1,1 +1,0 @@
-./bot -t "MjAwMjgyNDM0Mjk2NzQxODg4.Cmb4bQ.2R_cqq5RJ7I_KBAu5owKrNyvFkY"
