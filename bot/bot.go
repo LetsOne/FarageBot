@@ -65,28 +65,6 @@ type Sound struct {
 	buffer [][]byte
 }
 
-type User struct {
-    ID            string `json:"id"`
-    Email         string `json:"email"`
-    Username      string `json:"username"`
-    Avatar        string `json:"Avatar"`
-    Discriminator string `json:"discriminator"`
-    Token         string `json:"token"`
-    Verified      bool   `json:"verified"`
-    Bot           bool   `json:"bot"`
-}
-
-type Message struct {
-    ID              string        `json:"id"`
-    ChannelID       string        `json:"channel_id"`
-    Content         string        `json:"content"`
-    Timestamp       string        `json:"timestamp"`
-    EditedTimestamp string        `json:"edited_timestamp"`
-    Tts             bool          `json:"tts"`
-    MentionEveryone bool          `json:"mention_everyone"`
-    Author          *User         `json:"author"`
-}
-
 // Array of all the sounds we have
 
 var KHALED *SoundCollection = &SoundCollection{
