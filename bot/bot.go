@@ -90,9 +90,9 @@ var TRACER *SoundCollection = &SoundCollection{
 		"!tracer",
 	},
 	Sounds: []*Sound{
-		createSound("deja", 50, 250),
-		createSound("cheers", 50, 250),
 		createSound("cavalry", 50, 250),
+		createSound("cheers", 50, 250),
+		createSound("deja", 50, 250),
 	},
 }
 
@@ -142,11 +142,11 @@ var DVA *SoundCollection = &SoundCollection{
 		"!dva",
 	},
 	Sounds: []*Sound{
-		createSound("winky", 50, 250),
-		createSound("lol", 50, 250),
-		createSound("leet", 50, 250),
-		createSound("ree", 50, 250),
 		createSound("gg", 50, 250),
+		createSound("leet", 50, 250),
+		createSound("lol", 50, 250),
+		createSound("ree", 50, 250),
+		createSound("winky", 50, 250),
 	},
 }
 
@@ -166,27 +166,27 @@ var BAG *SoundCollection = &SoundCollection{
 		"!bag",
 	},
 	Sounds: []*Sound{
-		createSound("skywrath", 10, 250),
-		createSound("spiritbreaker", 50, 250),
-		createSound("orge", 50, 250),
-		createSound("phoenix", 50, 250),
-		createSound("skeletonking", 50, 250),
-		createSound("tree", 50, 250),
-		createSound("timber", 50, 250),
+		createSound("abaddon", 50, 250),
+		createSound("bristle", 50, 250),
+		createSound("centaur", 50, 250),
+		createSound("earthspirit", 50, 250),
+		createSound("eldertitan", 50, 250),
 		createSound("jakiro", 50, 250),
 		createSound("legion", 50, 250),
 		createSound("magnus", 50, 250),
 		createSound("medusa", 50, 250),
 		createSound("meepo", 50, 250),
-		createSound("omniknight", 50, 250),
 		createSound("nyx", 50, 250),
+		createSound("omniknight", 50, 250),
 		createSound("oracle", 50, 250),
-		createSound("io", 50, 250),
-		createSound("abaddon", 50, 250),
-		createSound("centaur", 50, 250),
-		createSound("earthspirit", 50, 250),
-		createSound("eldertitan", 50, 250),
-		createSound("bristle", 50, 250),
+		createSound("orge", 50, 250),
+		createSound("phoenix", 50, 250),
+		createSound("skeletonking", 50, 250),
+		createSound("skywrath", 10, 250),
+		createSound("spiritbreaker", 50, 250),
+		createSound("timbersaw", 50, 250),
+		createSound("treant", 50, 250),
+		createSound("wisp", 50, 250),
 
 	},
 }
@@ -287,37 +287,38 @@ var DOTA *SoundCollection = &SoundCollection{
 		"!dota",
 	},
 	Sounds: []*Sound{
-		createSound("pudgefirstblood", 50, 250),
-		createSound("rikiredundant", 50, 250),
-		createSound("sandkingno", 50, 250),
-		createSound("tinkerhazard", 50, 250),
-		createSound("viperholyshit", 50, 250),
-		createSound("windcouldbeworse", 50, 250),
-		createSound("eldertitangetoff", 50, 250),
-		createSound("gyroholyshit", 50, 250),
-		createSound("kotlmint", 50, 250),
-		createSound("kotlthereitgoes", 50, 250),
-		createSound("kotlgandalf", 50, 250),
-		createSound("lionbeentohellandbacktohellandback", 50, 250),
-		createSound("lunaabsolutelynot", 50, 250),
-		createSound("lunapirate", 50, 250),
-		createSound("lunailluminate", 50, 250),
-		createSound("necrodirtybitch", 50, 250),
-		createSound("orgepureskill", 50, 250),
-		createSound("orgeskillshot", 50, 250),
-		createSound("orgesmarter", 50, 250),
-		createSound("orgehittheroad", 50, 250),
-		createSound("qopouch", 1, 250),
-		createSound("ababbdonohnoyoudidnt", 50, 250),
-		createSound("blinkdaggerrrrrr", 50, 250),
-		createSound("brewmasterbarrel", 50, 250),
-		createSound("bristleugly", 50, 250),
-		createSound("bastionfaceamother", 50, 250),
-		createSound("spreslove", 50, 250),
-		createSound("sphlhf", 50, 250),
-		createSound("spdiplomatic", 50, 250),
-		createSound("spbread", 1, 250),
-		createSound("spdota", 50, 250),
+		createSound("absolutely", 50, 250),
+		createSound("barrel", 50, 250),
+		createSound("blinkdagger", 50, 250),
+		createSound("bread", 1, 250),
+		createSound("diplomatic", 50, 250),
+		createSound("dirtybitch", 50, 250),
+		createSound("dota", 50, 250),
+		createSound("gandalf", 50, 250),
+		createSound("gyroshit", 50, 250),
+		createSound("hazard", 50, 250),
+		createSound("hell", 50, 250),
+		createSound("hittheroad", 50, 250),
+		createSound("hlhf", 50, 250),
+		createSound("illuminate", 50, 250),
+		createSound("jizz", 50, 250),
+		createSound("lawn", 50, 250),
+		createSound("mint", 50, 250),
+		createSound("mother", 50, 250),
+		createSound("no", 50, 250),
+		createSound("ohnoyou", 50, 250),
+		createSound("ouch", 1, 250),
+		createSound("pirate", 50, 250),
+		createSound("pureskill", 50, 250),
+		createSound("redundant", 50, 250),
+		createSound("reslove", 50, 250),
+		createSound("skillshot", 50, 250),
+		createSound("smarter", 50, 250),
+		createSound("thereitgoes", 50, 250),
+		createSound("ugly", 50, 250),
+		createSound("vipershit", 50, 250),
+		createSound("whynot", 50, 250),
+		createSound("worse", 50, 250),
 	},
 }
 
@@ -550,6 +551,11 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
     // If the queue is empty, delete it
  	time.Sleep(time.Millisecond * time.Duration(play.Sound.PartDelay))
  	delete(queues, play.GuildID)
+
+
+ 	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+
+ 	
 	return nil
 }
 
@@ -605,6 +611,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
+	
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
