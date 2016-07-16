@@ -346,6 +346,25 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 
 }
 
+func noonTask() {
+    s.ChannelMessageSend("203630579617366016", "!mcree highnoon")
+}
+
+func initNoon() {
+    t := time.Now()
+    n := time.Date(t.Year(), t.Month(), t.Day(), 12, 0, 0, 0, t.Location())
+    d := n.Sub(t)
+    if d < 0 {
+        n = n.Add(24 * time.Hour)
+        d = n.Sub(t)
+    }
+    for {
+        time.Sleep(d)
+        d = 24 * time.Hour
+        noonTask()
+    }
+}
+
 // Create a Sound struct
 func createSound(Name string, Weight int, PartDelay int) *Sound {
 	return &Sound{
@@ -657,6 +676,9 @@ func main() {
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onMessageCreate)
+
+	initNoon()
+
 
 	err = discord.Open()
 	if err != nil {
