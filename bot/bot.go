@@ -604,11 +604,23 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
     
+    /*if m.Content == "!fix" {
+		channel == nil
+        u
+        discordgo.VoiceConnection.ChangeChannel(guild, , false, false)
+	}*/
+    
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
 	
 	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+    
+    if m.Content == "!pitlord" {
+        t:= time.now()
+        pitlordUntil := ((1471910400 - t)/3600)
+        s.ChannelMessageSend("152512662800957440", (pitlordUntil + " hours until pitlord comes out"))
+	}
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
