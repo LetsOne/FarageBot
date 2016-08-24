@@ -281,6 +281,26 @@ var WAKE *SoundCollection = &SoundCollection{
 	},
 }
 
+var KEEM *SoundCollection = &SoundCollection{
+	Prefix: "keem",
+	Commands: []string{
+		"!keem",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
+var JASON *SoundCollection = &SoundCollection{
+	Prefix: "jason",
+	Commands: []string{
+		"!jason",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
 var DOTA *SoundCollection = &SoundCollection{
 	Prefix: "dota",
 	Commands: []string{
@@ -291,6 +311,7 @@ var DOTA *SoundCollection = &SoundCollection{
 		createSound("barrel", 50, 250),
 		createSound("blinkdagger", 50, 250),
 		createSound("bread", 1, 250),
+		createSound("deal", 50, 250),
 		createSound("diplomatic", 50, 250),
 		createSound("dirtybitch", 50, 250),
 		createSound("dota", 50, 250),
@@ -342,6 +363,8 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	NOBALLS,
 	SUH,
 	WAKE,
+	KEEM,
+	JASON,
 	DOTA,
 
 }
