@@ -619,6 +619,31 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}).Warning("Failed to grab guild")
 		return
 	}
+
+	// Champ tracking
+
+	if m.Content == "!addchamp"  {
+
+        removedspaces := strings.SplitN(msg," ",2)
+        addchamp := removedspaces[1] 
+        file, _ := os.OpenFile("champ.txt",os.O_APPEND, 0666) 
+        byteSlice := []byte(addchamp + "\n")
+        file.Write(byteSlice)
+        file.Close()
+
+        //ioutil.WriteFile("champ.txt", []byte(addchamp+"\n"), 0666)
+
+    }
+
+    if m.Content == "!champ" {
+
+        file, _  := os.Open("champ.txt")
+        data, _  := ioutil.ReadAll(file)
+        stringdata := fmt.Sprintf("%s", data)
+        discord.ChannelMessageSend("203630579617366016",stringdata)
+        file.Close()
+
+    }
     
     //Sends a direct message with the list of possible commands
 	u := m.Author
