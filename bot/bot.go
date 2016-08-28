@@ -14,6 +14,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jasonlvhit/gocron"
 )
 
 var (
@@ -593,6 +594,12 @@ func scontains(key string, options ...string) bool {
 	return false
 }
 
+func Highnoon() {
+
+	discord.ChannelMessageSend("203630579617366016", "!mcree")
+
+}
+
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
@@ -714,6 +721,10 @@ func main() {
 		return
 	}
 
+	s := gocron.NewScheduler()
+	s.Every(1).Day().At("12:00").Do(Highnoon)
+	<- s.Start()
+
 	// We're running!
 	log.Info("FarageBot is up!")
 
@@ -722,4 +733,3 @@ func main() {
 	signal.Notify(c, os.Interrupt, os.Kill)
 	<-c
 }
-
