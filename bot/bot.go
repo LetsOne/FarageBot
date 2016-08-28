@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"strings"
 	"time"
+	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -578,7 +579,6 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	return nil
 }
 
-
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
 	log.Info("Recieved READY payload")
 	s.UpdateStatus(0, "Fuck the EU")
@@ -598,6 +598,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	u := m.Author
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+	
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
 	parts := strings.Split(strings.ToLower(msg), " ")
 
@@ -620,18 +623,18 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+
 	// Champ tracking
 
-	if m.Content == "!addchamp"  {
-
+	if parts[0] == "!addchamp"  {
         removedspaces := strings.SplitN(msg," ",2)
         addchamp := removedspaces[1] 
         file, _ := os.OpenFile("champ.txt",os.O_APPEND, 0666) 
-        byteSlice := []byte(addchamp + "\n")
-        file.Write(byteSlice)
+        file.WriteString(addchamp)
+        //byteSlice := []byte(addchamp + "\n")
+        //file.Write(byteSlice)
         file.Close()
-
-        //ioutil.WriteFile("champ.txt", []byte(addchamp+"\n"), 0666)
+        discord.ChannelMessageSend("203630579617366016",(addchamp + " Has been added"))
 
     }
 
@@ -640,13 +643,12 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
         file, _  := os.Open("champ.txt")
         data, _  := ioutil.ReadAll(file)
         stringdata := fmt.Sprintf("%s", data)
-        discord.ChannelMessageSend("203630579617366016",stringdata)
+        discord.ChannelMessageSend(channel.ID,stringdata)
         file.Close()
 
     }
     
     //Sends a direct message with the list of possible commands
-	u := m.Author
 	if m.Content == "!help" {
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
@@ -655,8 +657,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
-	
-	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
