@@ -10,9 +10,11 @@ import (
 	"os/signal"
 	"strings"
 	"time"
+	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
+	"github.com/jasonlvhit/gocron"
 )
 
 var (
@@ -578,7 +580,6 @@ func playSound(play *Play, vc *discordgo.VoiceConnection) (err error) {
 	return nil
 }
 
-
 func onReady(s *discordgo.Session, event *discordgo.Ready) {
 	log.Info("Recieved READY payload")
 	s.UpdateStatus(0, "Fuck the EU")
@@ -593,11 +594,20 @@ func scontains(key string, options ...string) bool {
 	return false
 }
 
+func Highnoon() {
+
+	discord.ChannelMessageSend("203630579617366016", "!mcree")
+
+}
+
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
 	}
 
+	u := m.Author
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+	
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
 	parts := strings.Split(strings.ToLower(msg), " ")
 
@@ -619,9 +629,33 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}).Warning("Failed to grab guild")
 		return
 	}
+
+
+	// Champ tracking
+
+	if parts[0] == "!addchamp"  {
+        removedspaces := strings.SplitN(msg," ",2)
+        addchamp := removedspaces[1] 
+        file, _ := os.OpenFile("champ.txt",os.O_APPEND, 0666) 
+        file.WriteString(addchamp)
+        //byteSlice := []byte(addchamp + "\n")
+        //file.Write(byteSlice)
+        file.Close()
+        discord.ChannelMessageSend("203630579617366016",(addchamp + " Has been added"))
+
+    }
+
+    if m.Content == "!champ" {
+
+        file, _  := os.Open("champ.txt")
+        data, _  := ioutil.ReadAll(file)
+        stringdata := fmt.Sprintf("%s", data)
+        discord.ChannelMessageSend(channel.ID,stringdata)
+        file.Close()
+
+    }
     
     //Sends a direct message with the list of possible commands
-	u := m.Author
 	if m.Content == "!help" {
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
@@ -630,8 +664,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
-	
-	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
@@ -689,6 +721,10 @@ func main() {
 		return
 	}
 
+	s := gocron.NewScheduler()
+	s.Every(1).Day().At("12:00").Do(Highnoon)
+	<- s.Start()
+
 	// We're running!
 	log.Info("FarageBot is up!")
 
@@ -697,4 +733,3 @@ func main() {
 	signal.Notify(c, os.Interrupt, os.Kill)
 	<-c
 }
-
