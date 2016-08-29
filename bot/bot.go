@@ -313,6 +313,16 @@ var TWELVE *SoundCollection = &SoundCollection{
 	},
 }
 
+var NOOT *SoundCollection = &SoundCollection{
+	Prefix: "noot",
+	Commands: []string{
+		"!noot",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
 var DOTA *SoundCollection = &SoundCollection{
 	Prefix: "dota",
 	Commands: []string{
@@ -379,6 +389,7 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	JASON,
 	DOTA,
 	TWELVE,
+	NOOT,
 
 }
 
@@ -678,6 +689,13 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
     
+    if m.Content == "!stop" && m.Author.ID == "97099676871823360"{
+
+    	os.Exit(0)
+
+    }
+
+
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
