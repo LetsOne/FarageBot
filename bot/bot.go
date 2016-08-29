@@ -303,6 +303,16 @@ var JASON *SoundCollection = &SoundCollection{
 	},
 }
 
+var TWELVE *SoundCollection = &SoundCollection{
+	Prefix: "twelve",
+	Commands: []string{
+		"!twelve",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
 var DOTA *SoundCollection = &SoundCollection{
 	Prefix: "dota",
 	Commands: []string{
@@ -368,6 +378,7 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	KEEM,
 	JASON,
 	DOTA,
+	TWELVE,
 
 }
 
@@ -600,6 +611,12 @@ func Highnoon() {
 
 }
 
+func twelveoclock() {
+
+	discord.ChannelMessageSend("203630579617366016", "!twelve")
+
+}
+
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
@@ -723,6 +740,7 @@ func main() {
 
 	s := gocron.NewScheduler()
 	s.Every(1).Day().At("12:00").Do(Highnoon)
+	s.Every(1).Day().At("00:00").Do(twelveoclock)
 	<- s.Start()
 
 	// We're running!
