@@ -303,26 +303,6 @@ var JASON *SoundCollection = &SoundCollection{
 	},
 }
 
-var TWELVE *SoundCollection = &SoundCollection{
-	Prefix: "twelve",
-	Commands: []string{
-		"!twelve",
-	},
-	Sounds: []*Sound{
-		createSound("one", 50, 250),
-	},
-}
-
-var NOOT *SoundCollection = &SoundCollection{
-	Prefix: "noot",
-	Commands: []string{
-		"!noot",
-	},
-	Sounds: []*Sound{
-		createSound("one", 50, 250),
-	},
-}
-
 var DOTA *SoundCollection = &SoundCollection{
 	Prefix: "dota",
 	Commands: []string{
@@ -365,6 +345,41 @@ var DOTA *SoundCollection = &SoundCollection{
 	},
 }
 
+var TWELVE *SoundCollection = &SoundCollection{
+	Prefix: "twelve",
+	Commands: []string{
+		"!twelve",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
+var NOOT *SoundCollection = &SoundCollection{
+	Prefix: "noot",
+	Commands: []string{
+		"!noot",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+}
+
+var PINK *SoundCollection = &SoundCollection{
+	Prefix: "pink",
+	Commands: []string{
+		"!pink",
+	},
+	Sounds: []*Sound{
+		createSound("stupid", 50, 250),
+		createSound("cunt", 50, 250),
+		createSound("stop", 50, 250),
+		createSound("shut", 50, 250),
+		createSound("nobody", 50, 250),
+	},
+}
+
+
 var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	KILLYOURSELF,
 	KHALED,
@@ -390,6 +405,7 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	DOTA,
 	TWELVE,
 	NOOT,
+	PINK,
 
 }
 
@@ -662,14 +678,13 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	// Champ tracking
 
 	if parts[0] == "!addchamp"  {
-        removedspaces := strings.SplitN(msg," ",2)
-        addchamp := removedspaces[1] 
-        file, _ := os.OpenFile("champ.txt",os.O_APPEND, 0666) 
-        file.WriteString(addchamp)
-        //byteSlice := []byte(addchamp + "\n")
-        //file.Write(byteSlice)
-        file.Close()
-        discord.ChannelMessageSend("203630579617366016",(addchamp + " Has been added"))
+
+		removedspaces := strings.SplitN(msg," ",2)
+    	addchamp := removedspaces[1] 
+   		fmt.Println(addchamp)
+    	f, _ := os.OpenFile("champ.txt", os.O_APPEND, 0666)
+    	f.WriteString(addchamp) 
+    	f.Close()
 
     }
 
