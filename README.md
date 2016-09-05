@@ -8,7 +8,14 @@ This bot is an edited version of the [Airhorn](https://github.com/hammerandchise
 ```
 go get github.com/LetsOne/FarageBot/bot
 
+go get github.com/Sirupsen/logrus
+ 
+go get github.com/bwmarrin/discordgo
+
+go get github.com/jasonlvhit/gocron
+
 go install github.com/LetsOne/FarageBot/bot
+
 ```
 
 **To Run**
