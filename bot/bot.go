@@ -18,6 +18,16 @@ import (
 )
 
 var (
+
+Emotes = [...]string{
+
+"Jakka",
+"JakesGame",
+
+}
+)
+
+var (
 	// discordgo session
 	discord *discordgo.Session
 
@@ -644,6 +654,47 @@ func twelveoclock() {
 
 }
 
+func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
+
+	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
+	parts := strings.Split(msg, " ")
+
+	channel, _ := discord.State.Channel(m.ChannelID)
+	if channel == nil {
+		log.WithFields(log.Fields{
+			"channel": m.ChannelID,
+			"message": m.ID,
+		}).Warning("Failed to grab channel")
+		return
+	}
+
+	guild, _ := discord.State.Guild(channel.GuildID)
+	if guild == nil {
+		log.WithFields(log.Fields{
+			"guild":   channel.GuildID,
+			"channel": channel,
+			"message": m.ID,
+		}).Warning("Failed to grab guild")
+		return
+	}
+
+	for i := range parts {
+	    for j := range Emotes {
+	        if parts[i] == Emotes[j] {  
+	            file, err := os.Open(Emotes[j] + ".png")
+	            if err != nil {
+    				log.Fatal(err)
+    			}
+	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
+	            file.Close()
+
+	            return
+	        } 
+	    }
+	}
+}
+
+
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		return
@@ -762,6 +813,7 @@ func main() {
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onMessageCreate)
+	discord.AddHandler(CheckforEmote)
 
 	err = discord.Open()
 	if err != nil {
