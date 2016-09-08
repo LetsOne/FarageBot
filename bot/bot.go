@@ -11,18 +11,25 @@ import (
 	"strings"
 	"time"
 	"io/ioutil"
+	"strconv"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
 	"github.com/jasonlvhit/gocron"
+	"github.com/PuerkitoBio/goquery"
 )
 
 var (
 
-Emotes = [...]string{
+BName = [...]string{
 
-"Jakka",
-"JakesGame",
+"Per",
+
+}
+
+BDate = [...]string{
+
+"8/9",
 
 }
 )
@@ -37,7 +44,10 @@ var (
 	// Sound encoding settings
 	BITRATE        = 128
 	MAX_QUEUE_SIZE = 3
+
+	now = time.Now()
 )
+
 
 // Play represents an individual use of a command
 type Play struct {
@@ -72,6 +82,20 @@ type Sound struct {
 	// Buffer to store encoded PCM packets
 	buffer [][]byte
 }
+
+var (
+
+Emotes = [...]string{
+
+"Jakka",
+"JakesGame",
+"SUL",
+"MissionAccomplished",
+
+}
+)
+
+
 
 // Array of all the sounds we have
 
@@ -389,6 +413,28 @@ var PINK *SoundCollection = &SoundCollection{
 	},
 }
 
+var BIRTHDAYSOUND *SoundCollection = &SoundCollection{
+	Prefix: "birthday",
+	Commands: []string{
+		"!birthdaysound",
+	},
+	Sounds: []*Sound{
+		createSound("one", 50, 250),
+	},
+
+}
+
+var NAME *SoundCollection = &SoundCollection{
+	Prefix: "name",
+	Commands: []string{
+		"!name",
+	},
+	Sounds: []*Sound{
+		createSound("per", 50, 250),
+	},
+}
+
+
 
 var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	KILLYOURSELF,
@@ -416,6 +462,8 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	TWELVE,
 	NOOT,
 	PINK,
+	BIRTHDAYSOUND,
+	NAME,
 
 }
 
@@ -681,11 +729,12 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 	for i := range parts {
 	    for j := range Emotes {
 	        if parts[i] == Emotes[j] {  
-	            file, err := os.Open(Emotes[j] + ".png")
+	            file, err := os.Open("emotes/" + Emotes[j] + ".png")
 	            if err != nil {
     				log.Fatal(err)
     			}
 	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
+	            log.Info("Sending Emote " + Emotes[j] )
 	            file.Close()
 
 	            return
@@ -693,7 +742,6 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 	    }
 	}
 }
-
 
 func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
@@ -705,6 +753,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
 	parts := strings.Split(strings.ToLower(msg), " ")
+	partsunchanged := strings.Split(msg, " ")
+
+	log.Info(u.Username + " sent " + m.Content)
+	log.Info("Which splits into:")
+	log.Info(parts)
 
 	channel, _ := discord.State.Channel(m.ChannelID)
 	if channel == nil {
@@ -730,6 +783,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if parts[0] == "!addchamp"  {
 
+		log.Info("!addchamp has been recieved")
+
 		removedspaces := strings.SplitN(msg," ",2)
     	addchamp := removedspaces[1] 
    		fmt.Println(addchamp)
@@ -741,6 +796,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     if m.Content == "!champ" {
 
+    	log.Info("!champ has been recieved")
+
         file, _  := os.Open("champ.txt")
         data, _  := ioutil.ReadAll(file)
         stringdata := fmt.Sprintf("%s", data)
@@ -751,6 +808,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
     
     //Sends a direct message with the list of possible commands
 	if m.Content == "!help" {
+
+		log.Info("!help has been recieved")
+
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
@@ -761,10 +821,44 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
     }
 
+	if m.Content == "!birthday" {
+
+		log.Info("!birthday has been recieved")
+
+		for i := range BDate {
+			log.Info(i)
+        	if BDate[i] == (strconv.Itoa(now.Day())  + "/" + strconv.Itoa(int(now.Month()))) {  
+				log.Info("Happy Birthday "+ BName[i])
+				discord.ChannelMessageSend("203630579617366016", "!birthdaysound")
+				discord.ChannelMessageSend("203630579617366016", "!name per")
+				
+           	} 
+        }
+	}    
+
+	if parts[0] == "!sr" {
+		log.Info("!sr has been recieved")
+
+		website := ("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1])
+
+		log.Info("Checking " + website + " for Skill Ranking" )
+		doc, err := goquery.NewDocument(website) 
+		if err != nil {
+			log.Fatal(err)
+		}
+	  	
+	  	doc.Find(".masthead-player-progression:nth-child(3) > div:nth-child(2) > div:nth-child(2)").Each(func(i int, s *goquery.Selection) {
+	    	rank := s.Text()
+
+	    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
+		})
+	}
+
 
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
+	log.Info(deleteID + " has been deleted")
     
 	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
