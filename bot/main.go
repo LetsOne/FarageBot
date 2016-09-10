@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"time"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -95,9 +96,11 @@ func (s *SoundCollection) Random() *Sound {
 // https://github.com/nstafie/dca-rs
 // eg: dca-rs --raw -i <input wav file> > <output file>
 func (s *Sound) Load(c *SoundCollection) error {
-	path := fmt.Sprintf("audio/%v_%v.dca", c.Prefix, s.Name)
+	path := fmt.Sprintf("/bin/audio/%v_%v.dca", c.Prefix, s.Name)
 
-	file, err := os.Open(path)
+	gopath := os.Getenv("GOPATH")
+
+	file, err := os.Open(filepath.FromSlash(gopath + path))
 
 	if err != nil {
 		fmt.Println("error opening dca file :", err)

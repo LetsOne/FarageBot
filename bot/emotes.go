@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 	"strings"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -49,12 +50,16 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 	for i := range parts {
 	    for j := range Emotes {
 	        if parts[i] == Emotes[j] {  
-	            file, err := os.Open("emotes/" + Emotes[j] + ".png")
+	        	gopath := os.Getenv("GOPATH")
+	        	log.Info(gopath+"/bin/emotes/" + Emotes[j] + ".png")
+	            file, err := os.Open(filepath.FromSlash(gopath+"/bin/emotes/" + Emotes[j] + ".png"))
 	            if err != nil {
     				log.Fatal(err)
     				return 
     			}
 	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
+	            u := m.Author
+	            s.ChannelMessageSend("203630579617366016", (u.Username + " sent Emote:" + Emotes[j]))
 	            log.Info("Sending Emote " + Emotes[j] )
 	            file.Close()
 	            if i == 0 {
