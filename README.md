@@ -1,7 +1,7 @@
 # FarageBot
 You will need [discordgo](https://github.com/bwmarrin/discordgo).
 
-This bot is an edited version of the [Airhorn](https://github.com/hammerandchisel/airhornbot) bot with the server elements removed and desgined to run on single server. 
+This bot is an edited version of the [Airhorn](https://github.com/hammerandchisel/airhornbot) bot with the web server elements removed and desgined to run on a single discord server. It does alot of useless things. 
 
 **To Get**
 
