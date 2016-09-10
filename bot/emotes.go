@@ -13,11 +13,11 @@ var (
 
 Emotes = [...]string{
 
+"Cuck",
 "Jakka",
 "JakesGame",
 "SUL",
 "Bush",
-"Cuck",
 
 }
 )
@@ -52,15 +52,13 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 	            file, err := os.Open("emotes/" + Emotes[j] + ".png")
 	            if err != nil {
     				log.Fatal(err)
+    				return 
     			}
 	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
 	            log.Info("Sending Emote " + Emotes[j] )
 	            file.Close()	       
 	           	return   
 	        } 
-	    	return
-	    }
-		return    	  
+	    }  	  
 	}
-	return	
 }
