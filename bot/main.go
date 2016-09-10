@@ -203,6 +203,7 @@ func createPlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollect
 // Prepares and enqueues a play into the ratelimit/buffer guild queue
 func enqueuePlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollection, sound *Sound) {
 	play := createPlay(user, guild, coll, sound)
+	log.Info("Playing " + coll.Prefix)
 	if play == nil {
 		return
 	}

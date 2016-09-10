@@ -56,7 +56,12 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
     			}
 	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
 	            log.Info("Sending Emote " + Emotes[j] )
-	            file.Close()	       
+	            file.Close()
+	            if i == 0 {
+	            	deleteID := m.ID
+					s.ChannelMessageDelete(channel.ID, deleteID)
+					log.Info(deleteID + " has been deleted")
+	            }	       
 	           	return   
 	        } 
 	    }  	  

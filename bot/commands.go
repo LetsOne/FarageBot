@@ -6,6 +6,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"strconv"
+	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -47,8 +48,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}).Warning("Failed to grab guild")
 		return
 	}
-
-
 	// Champ tracking
 	if parts[0] == "!addchamp" && m.Author.ID == "110110924102205440"  {
 
@@ -64,12 +63,12 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
         defer f.Close()
 
-        if _, err = f.WriteString(addchamp+"\n"); err != nil {
+        if _, err = f.WriteString(addchamp+"\n\n"); err != nil {
             panic(err)
         }
     }
 
-
+    //Displays lastest champs
     if m.Content == "!champ" {
 
     	log.Info("!champ has been recieved")
@@ -91,12 +90,13 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
 	}
     
+    //Stops the bot
     if m.Content == "!stop" && m.Author.ID == "97099676871823360"{
 
     	os.Exit(0)
 
     }
-
+    //Checks if the current day is a known birthday
 	if m.Content == "!birthday" {
 
 		log.Info("!birthday has been recieved")
@@ -105,9 +105,18 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			log.Info(i)
         	if BDate[i] == (strconv.Itoa(now.Day())  + "/" + strconv.Itoa(int(now.Month()))) {  
 				log.Info("Happy Birthday "+ BName[i])
-				discord.ChannelMessageSend("203630579617366016", "!birthdaysound")
-				discord.ChannelMessageSend("203630579617366016", "!name per")
-				
+				coll := BIRTHDAYSOUND
+				var sound *Sound
+				go enqueuePlay(m.Author, guild, coll, sound)
+				time.Sleep(200 * time.Millisecond)
+				lcaseBName := strings.ToLower(BName[i])
+				coll = NAME
+				for _, sound = range coll.Sounds {
+					if sound.Name == lcaseBName {
+					go enqueuePlay(m.Author, guild, coll, sound)
+					}
+
+				}
            	} 
         }
 	}    
@@ -135,8 +144,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	deleteID := m.ID
 	s.ChannelMessageDelete(channel.ID, deleteID)
 	log.Info(deleteID + " has been deleted")
-    
-	// Find the collection for the command we got
+
+		// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
 		if scontains(parts[0], coll.Commands...) {
 			// If they passed a specific sound effect, find and select that (otherwise play nothing)
@@ -155,4 +164,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 	}
+
+
+    
 }
