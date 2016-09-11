@@ -138,6 +138,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		})
 	}
 
+    if m.Content == "!reloademotes" && m.Author.ID == "97099676871823360"{
+
+    	EmoteLookUp()
+    	
+    }
 
     //Removes commands after they have been executed to reduce spam
 	deleteID := m.ID

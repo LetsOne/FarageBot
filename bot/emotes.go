@@ -20,6 +20,9 @@ var (
 
 func EmoteLookUp() {
 
+	EmotesExt = make([]string, 0)
+	EmotesName = make([]string, 0)
+
     files, _ := ioutil.ReadDir(filepath.FromSlash(gopath +"/bin/emotes/"))
     for _, f := range files {
     	EmotesExt = append(EmotesExt, f.Name())
