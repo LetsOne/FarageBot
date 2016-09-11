@@ -349,7 +349,7 @@ var PINK *SoundCollection = &SoundCollection{
 var BIRTHDAYSOUND *SoundCollection = &SoundCollection{
 	Prefix: "birthday",
 	Commands: []string{
-		"!birthdaysound",
+		"",
 	},
 	Sounds: []*Sound{
 		createSound("one", 50, 250),
@@ -360,7 +360,7 @@ var BIRTHDAYSOUND *SoundCollection = &SoundCollection{
 var NAME *SoundCollection = &SoundCollection{
 	Prefix: "name",
 	Commands: []string{
-		"!name",
+		"",
 	},
 	Sounds: []*Sound{
 		createSound("per", 50, 250),
@@ -395,7 +395,7 @@ var COLLECTIONS []*SoundCollection = []*SoundCollection{
 	TWELVE,
 	NOOT,
 	PINK,
-	//BIRTHDAYSOUND,
-	//NAME,
+	BIRTHDAYSOUND,
+	NAME,
 
 }

@@ -7,8 +7,10 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	"os/signal"
+	//"os/signal"
 	"time"
+	"path/filepath"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -42,6 +44,8 @@ var (
 	MAX_QUEUE_SIZE = 3
 
 	now = time.Now()
+
+	gopath = os.Getenv("GOPATH")
 )
 
 
@@ -95,9 +99,9 @@ func (s *SoundCollection) Random() *Sound {
 // https://github.com/nstafie/dca-rs
 // eg: dca-rs --raw -i <input wav file> > <output file>
 func (s *Sound) Load(c *SoundCollection) error {
-	path := fmt.Sprintf("audio/%v_%v.dca", c.Prefix, s.Name)
+	path := fmt.Sprintf("/bin/audio/%v_%v.dca", c.Prefix, s.Name)
 
-	file, err := os.Open(path)
+	file, err := os.Open(filepath.FromSlash(gopath + path))
 
 	if err != nil {
 		fmt.Println("error opening dca file :", err)
@@ -203,6 +207,7 @@ func createPlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollect
 // Prepares and enqueues a play into the ratelimit/buffer guild queue
 func enqueuePlay(user *discordgo.User, guild *discordgo.Guild, coll *SoundCollection, sound *Sound) {
 	play := createPlay(user, guild, coll, sound)
+	log.Info("Playing " + coll.Prefix)
 	if play == nil {
 		return
 	}
@@ -292,6 +297,53 @@ func twelveoclock() {
 }
 
 
+func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	u := m.Author
+
+	if u.Bot == true{
+		return
+	}
+
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+	
+	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
+	parts := strings.Split(strings.ToLower(msg), " ")
+	partsunchanged := strings.Split(msg, " ")
+
+	log.Info(u.Username + " sent " + m.Content)
+	log.Info("Which splits into: ",partsunchanged)
+
+	channel, _ := discord.State.Channel(m.ChannelID)
+	if channel == nil {
+		log.WithFields(log.Fields{
+			"channel": m.ChannelID,
+			"message": m.ID,
+		}).Warning("Failed to grab channel")
+		return 
+	}
+
+	guild, _ := discord.State.Guild(channel.GuildID)
+	if guild == nil {
+		log.WithFields(log.Fields{
+			"guild":   channel.GuildID,
+			"channel": channel,
+			"message": m.ID,
+		}).Warning("Failed to grab guild")
+		return
+	}
+
+	if len(m.Content) <= 0 || m.Content[0] != '!'  {
+		log.Info("Checkingforemote")
+		CheckforEmote(partsunchanged, channel, s , m)
+		return
+	}
+	log.Info("CommandsAndSound")
+	CommandsAndSound(u, msg, parts, partsunchanged, channel, guild, s , m)
+
+}
+
+
 func main() {
 	var (
 		Token      = flag.String("t", "", "Discord Authentication Token")
@@ -318,7 +370,6 @@ func main() {
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onMessageCreate)
-	discord.AddHandler(CheckforEmote)
 
 	err = discord.Open()
 	if err != nil {
@@ -328,16 +379,20 @@ func main() {
 		return
 	}
 
-	s := gocron.NewScheduler()
-	s.Every(1).Day().At("12:00").Do(Highnoon)
-	s.Every(1).Day().At("00:00").Do(twelveoclock)
-	<- s.Start()
+	EmoteLookUp()
 
+	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
 
 	// Wait for a signal to quit
-	c := make(chan os.Signal, 1)
+	/*c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
-	<-c
+	<-c*/
+
+
+	s := gocron.NewScheduler()
+	s.Every(1).Day().At("12:00").Do(Highnoon)
+	s.Every(1).Day().At("00:00").Do(twelveoclock)
+	<- s.Start()
 }

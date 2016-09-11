@@ -3,6 +3,8 @@ package main
 import (
 	"os"
 	"strings"
+	"path/filepath"
+	"io/ioutil"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -11,52 +13,49 @@ import (
 //List of all the Emotes
 var (
 
-Emotes = [...]string{
-
-"Cuck",
-"Jakka",
-"JakesGame",
-"SUL",
-"Bush",
-
-}
+	EmotesExt = make([]string, 0)
+	EmotesName = make([]string, 0)
 )
 
-func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 
-	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
-	parts := strings.Split(msg, " ")
+func EmoteLookUp() {
 
-	channel, _ := discord.State.Channel(m.ChannelID)
-	if channel == nil {
-		log.WithFields(log.Fields{
-			"channel": m.ChannelID,
-			"message": m.ID,
-		}).Warning("Failed to grab channel")
-		return
-	}
+	EmotesExt = make([]string, 0)
+	EmotesName = make([]string, 0)
 
-	guild, _ := discord.State.Guild(channel.GuildID)
-	if guild == nil {
-		log.WithFields(log.Fields{
-			"guild":   channel.GuildID,
-			"channel": channel,
-			"message": m.ID,
-		}).Warning("Failed to grab guild")
-		return
-	}
+    files, _ := ioutil.ReadDir(filepath.FromSlash(gopath +"/bin/emotes/"))
+    for _, f := range files {
+    	EmotesExt = append(EmotesExt, f.Name())
+    }
 
-	for i := range parts {
-	    for j := range Emotes {
-	        if parts[i] == Emotes[j] {  
-	            file, err := os.Open("emotes/" + Emotes[j] + ".png")
+    for i := range EmotesExt{
+    	split := strings.Split(EmotesExt[i], ".")
+    	EmotesName = append(EmotesName,split[0])
+    }
+
+}
+
+func CheckforEmote(partsunchanged []string,channel *discordgo.Channel, s *discordgo.Session, m *discordgo.MessageCreate){
+
+	for i := range partsunchanged {
+		log.Info(partsunchanged[i])
+	    for j := range EmotesName {
+	    	log.Info(EmotesName[j])
+	        if partsunchanged[i] == EmotesName[j] {  
+	            file, err := os.Open(filepath.FromSlash(gopath+"/bin/emotes/" + EmotesExt[j]))
 	            if err != nil {
     				log.Fatal(err)
     				return 
     			}
-	            s.ChannelFileSend(channel.ID ,Emotes[j] + ".png", file)
-	            log.Info("Sending Emote " + Emotes[j] )
-	            file.Close()	       
+	            s.ChannelFileSend(channel.ID ,EmotesExt[j], file)
+	            u := m.Author
+	            s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + EmotesExt[j]))
+	            file.Close()
+	            if i == 0 {
+	            	deleteID := m.ID
+					s.ChannelMessageDelete(channel.ID, deleteID)
+					log.Info(deleteID + " has been deleted")
+	            }	       
 	           	return   
 	        } 
 	    }  	  
