@@ -7,7 +7,7 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	"os/signal"
+	//"os/signal"
 	"time"
 	"path/filepath"
 
@@ -43,6 +43,8 @@ var (
 	MAX_QUEUE_SIZE = 3
 
 	now = time.Now()
+
+	gopath = os.Getenv("GOPATH")
 )
 
 
@@ -97,8 +99,6 @@ func (s *SoundCollection) Random() *Sound {
 // eg: dca-rs --raw -i <input wav file> > <output file>
 func (s *Sound) Load(c *SoundCollection) error {
 	path := fmt.Sprintf("/bin/audio/%v_%v.dca", c.Prefix, s.Name)
-
-	gopath := os.Getenv("GOPATH")
 
 	file, err := os.Open(filepath.FromSlash(gopath + path))
 
@@ -332,16 +332,20 @@ func main() {
 		return
 	}
 
-	s := gocron.NewScheduler()
-	s.Every(1).Day().At("12:00").Do(Highnoon)
-	s.Every(1).Day().At("00:00").Do(twelveoclock)
-	<- s.Start()
+	EmoteLookUp()
 
+	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
 
 	// Wait for a signal to quit
-	c := make(chan os.Signal, 1)
+	/*c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, os.Kill)
-	<-c
+	<-c*/
+
+
+	s := gocron.NewScheduler()
+	s.Every(1).Day().At("12:00").Do(Highnoon)
+	s.Every(1).Day().At("00:00").Do(twelveoclock)
+	<- s.Start()
 }

@@ -27,8 +27,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 	partsunchanged := strings.Split(msg, " ")
 
 	log.Info(u.Username + " sent " + m.Content)
-	log.Info("Which splits into:")
-	log.Info(parts)
+	log.Info("Which splits into: ",parts)
 
 	channel, _ := discord.State.Channel(m.ChannelID)
 	if channel == nil {
