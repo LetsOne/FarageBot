@@ -301,12 +301,10 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	u := m.Author
 
-	if u.Bot == true{
+	if u.Bot == true {
 		return
 	}
 
-	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
-	
 	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
 	parts := strings.Split(strings.ToLower(msg), " ")
 	partsunchanged := strings.Split(msg, " ")
