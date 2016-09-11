@@ -35,38 +35,13 @@ func EmoteLookUp() {
 
 }
 
-func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
+func CheckforEmote(partsunchanged []string,channel *discordgo.Channel, s *discordgo.Session, m *discordgo.MessageCreate){
 
-	u := m.Author
-
-	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
-	parts := strings.Split(msg, " ")
-
-	log.Info(u.Username + " sent " + m.Content)
-	log.Info("Which splits into: ", parts)
-
-	channel, _ := discord.State.Channel(m.ChannelID)
-	if channel == nil {
-		log.WithFields(log.Fields{
-			"channel": m.ChannelID,
-			"message": m.ID,
-		}).Warning("Failed to grab channel")
-		return
-	}
-
-	guild, _ := discord.State.Guild(channel.GuildID)
-	if guild == nil {
-		log.WithFields(log.Fields{
-			"guild":   channel.GuildID,
-			"channel": channel,
-			"message": m.ID,
-		}).Warning("Failed to grab guild")
-		return
-	}
-
-	for i := range parts {
+	for i := range partsunchanged {
+		log.Info(partsunchanged[i])
 	    for j := range EmotesName {
-	        if parts[i] == EmotesName[j] {  
+	    	log.Info(EmotesName[j])
+	        if partsunchanged[i] == EmotesName[j] {  
 	            file, err := os.Open(filepath.FromSlash(gopath+"/bin/emotes/" + EmotesExt[j]))
 	            if err != nil {
     				log.Fatal(err)
@@ -75,7 +50,6 @@ func CheckforEmote(s *discordgo.Session, m *discordgo.MessageCreate){
 	            s.ChannelFileSend(channel.ID ,EmotesExt[j], file)
 	            u := m.Author
 	            s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + EmotesExt[j]))
-	            log.Info("Sending Emote " + EmotesExt[j] )
 	            file.Close()
 	            if i == 0 {
 	            	deleteID := m.ID

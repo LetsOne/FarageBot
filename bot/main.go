@@ -10,6 +10,7 @@ import (
 	//"os/signal"
 	"time"
 	"path/filepath"
+	"strings"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/bwmarrin/discordgo"
@@ -296,6 +297,53 @@ func twelveoclock() {
 }
 
 
+func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
+
+	u := m.Author
+
+	if u.Bot == true{
+		return
+	}
+
+	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
+	
+	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
+	parts := strings.Split(strings.ToLower(msg), " ")
+	partsunchanged := strings.Split(msg, " ")
+
+	log.Info(u.Username + " sent " + m.Content)
+	log.Info("Which splits into: ",partsunchanged)
+
+	channel, _ := discord.State.Channel(m.ChannelID)
+	if channel == nil {
+		log.WithFields(log.Fields{
+			"channel": m.ChannelID,
+			"message": m.ID,
+		}).Warning("Failed to grab channel")
+		return 
+	}
+
+	guild, _ := discord.State.Guild(channel.GuildID)
+	if guild == nil {
+		log.WithFields(log.Fields{
+			"guild":   channel.GuildID,
+			"channel": channel,
+			"message": m.ID,
+		}).Warning("Failed to grab guild")
+		return
+	}
+
+	if len(m.Content) <= 0 || m.Content[0] != '!'  {
+		log.Info("Checkingforemote")
+		CheckforEmote(partsunchanged, channel, s , m)
+		return
+	}
+	log.Info("CommandsAndSound")
+	CommandsAndSound(u, msg, parts, partsunchanged, channel, guild, s , m)
+
+}
+
+
 func main() {
 	var (
 		Token      = flag.String("t", "", "Discord Authentication Token")
@@ -322,7 +370,6 @@ func main() {
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onMessageCreate)
-	discord.AddHandler(CheckforEmote)
 
 	err = discord.Open()
 	if err != nil {

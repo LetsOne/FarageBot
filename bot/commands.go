@@ -7,96 +7,66 @@ import (
 	"io/ioutil"
 	"strconv"
 	"time"
+	"path/filepath"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/bwmarrin/discordgo"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/bwmarrin/discordgo"
 )
 
 
-func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(m.Content) <= 0 || m.Content[0] != '!'  {
-		return
-	}
+func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchanged []string,channel *discordgo.Channel, guild *discordgo.Guild, s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	u := m.Author
-	s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + m.Content))
-	
-	msg := strings.Replace(m.ContentWithMentionsReplaced(), s.State.Ready.User.Username, "username", 1)
-	parts := strings.Split(strings.ToLower(msg), " ")
-	partsunchanged := strings.Split(msg, " ")
+	log.Info("Here")
 
-	log.Info(u.Username + " sent " + m.Content)
-	log.Info("Which splits into: ",parts)
+	switch parts[0]{
 
-	channel, _ := discord.State.Channel(m.ChannelID)
-	if channel == nil {
-		log.WithFields(log.Fields{
-			"channel": m.ChannelID,
-			"message": m.ID,
-		}).Warning("Failed to grab channel")
-		return
-	}
+	case "!addchamp":
 
-	guild, _ := discord.State.Guild(channel.GuildID)
-	if guild == nil {
-		log.WithFields(log.Fields{
-			"guild":   channel.GuildID,
-			"channel": channel,
-			"message": m.ID,
-		}).Warning("Failed to grab guild")
-		return
-	}
-	// Champ tracking
-	if parts[0] == "!addchamp" && m.Author.ID == "110110924102205440"  {
+		if m.Author.ID == "110110924102205440" {
+			log.Info("!addchamp has been recieved")
 
-		log.Info("!addchamp has been recieved")
+			removedspaces := strings.SplitN(msg," ",2)
+	    	addchamp := removedspaces[1] 
 
-		removedspaces := strings.SplitN(msg," ",2)
-    	addchamp := removedspaces[1] 
+	        f, err := os.OpenFile("champ.txt", os.O_APPEND|os.O_WRONLY, 0600)
+	        if err != nil {
+	            panic(err)
+	        }
 
-        f, err := os.OpenFile("champ.txt", os.O_APPEND|os.O_WRONLY, 0600)
-        if err != nil {
-            panic(err)
-        }
+	        defer f.Close()
 
-        defer f.Close()
-
-        if _, err = f.WriteString(addchamp+"\n\n"); err != nil {
-            panic(err)
-        }
-    }
-
-    //Displays lastest champs
-    if m.Content == "!champ" {
+	        if _, err = f.WriteString(addchamp+"\n\n"); err != nil {
+	            panic(err)
+	        }
+	    }
+    
+    case "!champ":
 
     	log.Info("!champ has been recieved")
-
-        file, _  := os.Open("champ.txt")
+        file, err  := os.Open(filepath.FromSlash(gopath+"/bin/champ.txt"))
+	    if err != nil {
+	        panic(err)
+	    }
         data, _  := ioutil.ReadAll(file)
         stringdata := fmt.Sprintf("%s", data)
         discord.ChannelMessageSend(channel.ID,stringdata)
         file.Close()
 
-    }
-    
-    //Sends a direct message with the list of possible commands
-	if m.Content == "!help" {
+
+	case "!help":
 
 		log.Info("!help has been recieved")
 
 		dm, _ := s.UserChannelCreate(u.ID)
 		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
-	}
+
     
-    //Stops the bot
-    if m.Content == "!stop" && m.Author.ID == "97099676871823360"{
+	case "!stop":
 
-    	os.Exit(0)
+		os.Exit(0)
 
-    }
-    //Checks if the current day is a known birthday
-	if m.Content == "!birthday" {
+	case "!birthday":
 
 		log.Info("!birthday has been recieved")
 
@@ -118,9 +88,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				}
            	} 
         }
-	}    
 
-	if parts[0] == "!sr" {
+    case "!sr":
+
 		log.Info("!sr has been recieved")
 
 		website := ("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1])
@@ -136,20 +106,14 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
 		})
-	}
 
-    if m.Content == "!reloademotes" && m.Author.ID == "97099676871823360"{
+	case "!reloademotes":
 
-    	EmoteLookUp()
+		EmoteLookUp()
     	
     }
 
-    //Removes commands after they have been executed to reduce spam
-	deleteID := m.ID
-	s.ChannelMessageDelete(channel.ID, deleteID)
-	log.Info(deleteID + " has been deleted")
-
-		// Find the collection for the command we got
+	// Find the collection for the command we got
 	for _, coll := range COLLECTIONS {
 		if scontains(parts[0], coll.Commands...) {
 			// If they passed a specific sound effect, find and select that (otherwise play nothing)
@@ -161,14 +125,17 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					}
 				}
 				if sound == nil {
-					return
 				}
 			}
 			go enqueuePlay(m.Author, guild, coll, sound)
-			return
 		}
 	}
+	
 
-
+    //Removes commands after they have been executed to reduce spam
+	deleteID := m.ID
+	s.ChannelMessageDelete(channel.ID, deleteID)
+	log.Info(deleteID + " has been deleted")
+	return
     
 }
