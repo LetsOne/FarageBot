@@ -35,7 +35,7 @@ func EmoteLookUp() {
 
 }
 
-func CheckforEmote(partsunchanged []string,channel *discordgo.Channel, s *discordgo.Session, m *discordgo.MessageCreate){
+func CheckforEmote(u *discordgo.User, partsunchanged []string,channel *discordgo.Channel, s *discordgo.Session, m *discordgo.MessageCreate){
 
 	for i := range partsunchanged {
 		log.Info(partsunchanged[i])
@@ -48,7 +48,6 @@ func CheckforEmote(partsunchanged []string,channel *discordgo.Channel, s *discor
     				return 
     			}
 	            s.ChannelFileSend(channel.ID ,EmotesExt[j], file)
-	            u := m.Author
 	            s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + EmotesExt[j]))
 	            file.Close()
 	            if i == 0 {

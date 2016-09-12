@@ -17,20 +17,6 @@ import (
 	"github.com/jasonlvhit/gocron"
 )
 
-var (
-
-BName = [...]string{
-
-"Per",
-
-}
-
-BDate = [...]string{
-
-"8/9",
-
-}
-)
 
 var (
 	// discordgo session
@@ -333,7 +319,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	if len(m.Content) <= 0 || m.Content[0] != '!'  {
 		log.Info("Checkingforemote")
-		CheckforEmote(partsunchanged, channel, s , m)
+		CheckforEmote(u, partsunchanged, channel, s , m)
 		return
 	}
 	log.Info("CommandsAndSound")
