@@ -14,16 +14,37 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var (
+
+BName = [...]string{
+
+"Per",
+
+}
+
+BDate = [...]string{
+
+"8/9",
+
+}
+
+archie = "97099676871823360"
+mark = "110110924102205440"
+
+)
+
+
+
 
 func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchanged []string,channel *discordgo.Channel, guild *discordgo.Guild, s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	log.Info("Here")
+	s.ChannelMessageSend("203630579617366016",u.Username + " sent " + msg)
 
 	switch parts[0]{
 
 	case "!addchamp":
 
-		if m.Author.ID == "110110924102205440" {
+		if m.Author.ID == mark {
 			log.Info("!addchamp has been recieved")
 
 			removedspaces := strings.SplitN(msg," ",2)
@@ -64,7 +85,10 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
     
 	case "!stop":
 
-		os.Exit(0)
+		if m.Author.ID == archie {
+			s.Close()
+			os.Exit(0)
+		}
 
 	case "!birthday":
 
@@ -91,43 +115,45 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 
     case "!sr":
 
-		log.Info("!sr has been recieved")
+    	if len(parts) > 1 {
 
-		website := ("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1])
+			log.Info("!sr has been recieved")
 
-		log.Info("Checking " + website + " for Skill Ranking" )
-		doc, err := goquery.NewDocument(website) 
-		if err != nil {
-			log.Fatal(err)
-		}
-	  	//Thanks to my boy Jake for working this one out.
-	  	doc.Find(".masthead-player-progression:nth-child(3) > div:nth-child(2) > div:nth-child(2)").Each(func(i int, s *goquery.Selection) {
-	    	rank := s.Text()
+			website := ("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1])
 
-	    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
-		})
+			log.Info("Checking " + website + " for Skill Ranking" )
+			doc, err := goquery.NewDocument(website) 
+			if err != nil {
+				log.Fatal(err)
+			}
+		  	//Thanks to my boy Jake for working this one out.
+		  	doc.Find(".masthead-player-progression:nth-child(3) > div:nth-child(2) > div:nth-child(2)").Each(func(i int, s *goquery.Selection) {
+		    	rank := s.Text()
+
+		    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
+			})}
 
 	case "!reloademotes":
 
 		EmoteLookUp()
-    	
-    }
 
+	default:			
 	// Find the collection for the command we got
-	for _, coll := range COLLECTIONS {
-		if scontains(parts[0], coll.Commands...) {
-			// If they passed a specific sound effect, find and select that (otherwise play nothing)
-			var sound *Sound
-			if len(parts) > 1 {
-				for _, s := range coll.Sounds {
-					if parts[1] == s.Name {
-						sound = s
+		for _, coll := range COLLECTIONS {
+			if scontains(parts[0], coll.Commands...) {
+				// If they passed a specific sound effect, find and select that (otherwise play nothing)
+				var sound *Sound
+				if len(parts) > 1 {
+					for _, s := range coll.Sounds {
+						if parts[1] == s.Name {
+							sound = s
+						}
+					}
+					if sound == nil {
 					}
 				}
-				if sound == nil {
-				}
+				go enqueuePlay(m.Author, guild, coll, sound)
 			}
-			go enqueuePlay(m.Author, guild, coll, sound)
 		}
 	}
 	
