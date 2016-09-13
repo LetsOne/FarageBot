@@ -7,7 +7,6 @@ import (
 	"io"
 	"math/rand"
 	"os"
-	//"os/signal"
 	"time"
 	"path/filepath"
 	"strings"
@@ -368,12 +367,6 @@ func main() {
 	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
-
-	// Wait for a signal to quit
-	/*c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, os.Kill)
-	<-c*/
-
 
 	s := gocron.NewScheduler()
 	s.Every(1).Day().At("12:00").Do(Highnoon)
