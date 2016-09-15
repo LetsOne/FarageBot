@@ -29,6 +29,7 @@ var (
 	MAX_QUEUE_SIZE = 3
 
 	now = time.Now()
+    initialTime time.Time
 
 	gopath = os.Getenv("GOPATH")
 )
@@ -367,8 +368,8 @@ func main() {
 	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
-	initialTime := time.Now()
-
+    initialTime = time.Now()
+    
 	s := gocron.NewScheduler()
 	s.Every(1).Day().At("12:00").Do(Highnoon)
 	s.Every(1).Day().At("00:00").Do(twelveoclock)
