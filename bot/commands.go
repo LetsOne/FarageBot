@@ -132,7 +132,9 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 
 		    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
 			})}
-
+	case "!uptime":
+		uptime := Since(initialTime)
+		discord.ChannelMessageSend(channel.ID,uptime)
 	case "!reloademotes":
 
 		EmoteLookUp()
