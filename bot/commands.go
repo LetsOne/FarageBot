@@ -136,7 +136,7 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
         uptimeDur := time.Since(initialTime)
         uptimeDur = Round(uptimeDur, time.Second)
         uptimeDurString := uptimeDur.String()
-		discord.ChannelMessageSend(channel.ID,uptimeDurString)
+        discord.ChannelMessageSend(channel.ID,"The bot has be up for : " + uptimeDurString)
 	case "!reloademotes":
 
 		EmoteLookUp()
