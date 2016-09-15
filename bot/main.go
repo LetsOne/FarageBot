@@ -349,11 +349,11 @@ func main() {
 		}).Fatal("Failed to create discord session")
 		return
 	}
-    
+    	
     //handles events from discord, execute code when needed
 	discord.AddHandler(onReady)
 	discord.AddHandler(onMessageCreate)
-
+	
 	err = discord.Open()
 	if err != nil {
 		log.WithFields(log.Fields{
@@ -367,6 +367,7 @@ func main() {
 	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
+	initialTime := time.Now()
 
 	s := gocron.NewScheduler()
 	s.Every(1).Day().At("12:00").Do(Highnoon)
