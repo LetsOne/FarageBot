@@ -199,13 +199,8 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
         uptimeDur := time.Since(initialTime)
         uptimeDur = Round(uptimeDur, time.Second)
         uptimeDurString := uptimeDur.String()
-<<<<<<< HEAD
-		discord.ChannelMessageSend(channel.ID,uptimeDurString)
-
-
-=======
         discord.ChannelMessageSend(channel.ID,"I have been spreading memes for : " + uptimeDurString)
->>>>>>> origin/dev
+
 	case "!reloademotes":
 
 		EmoteLookUp()
