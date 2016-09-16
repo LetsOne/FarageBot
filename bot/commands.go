@@ -180,6 +180,8 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 				}
 		        appendrank := "\n" + partsunchanged[1] + " "  +  rank 
 
+		        discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank)
+		        
 		        f, err := os.OpenFile(filepath.FromSlash(gopath+"/bin/skillrank.txt"), os.O_APPEND|os.O_WRONLY, 0600)
 		        if err != nil {
 		            panic(err)
