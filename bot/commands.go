@@ -93,7 +93,7 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 
 		length := len(Lines)
 
-		discord.ChannelMessageSend(channel.ID,"The lastest Champion battle:\n\n" + Lines[length-1])	
+		discord.ChannelMessageSend(channel.ID,"The lastest Champion battle:\n\n" + Lines[length-2])	
 
 	case "!help":
 
