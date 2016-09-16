@@ -36,6 +36,7 @@ mark = "110110924102205440"
 BattleTag = make([]string, 0)
 SkillRank = make([]string, 0)
 lines = make([]string, 0)
+Lines = make([]string, 0)
 
 
 )
@@ -67,9 +68,9 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 	        }
 	    }
     
-    case "!champ":
+    case "!champall":
 
-    	log.Info("!champ has been recieved")
+    	log.Info("!champall has been recieved")
         file, err  := os.Open(filepath.FromSlash(gopath+"/bin/champ.txt"))
 	    if err != nil {
 	        panic(err)
@@ -79,6 +80,20 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
         discord.ChannelMessageSend(channel.ID,stringdata)
         file.Close()
 
+    case "!champ":
+
+    	log.Info("!champ has been recieved")
+		fileHandle, _ := os.Open(filepath.FromSlash(gopath+"/bin/champ.txt"))
+		defer fileHandle.Close()
+		fileScanner := bufio.NewScanner(fileHandle)
+
+		for fileScanner.Scan() {
+			Lines = append(Lines, fileScanner.Text())
+		}
+
+		length := len(Lines)
+
+		discord.ChannelMessageSend(channel.ID,"The lastest Champion battle:\n\n" + Lines[length-1])	
 
 	case "!help":
 
