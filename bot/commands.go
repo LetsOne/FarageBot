@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 	"path/filepath"
+	"bufio"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/PuerkitoBio/goquery"
@@ -31,9 +32,13 @@ BDate = [...]string{
 archie = "97099676871823360"
 mark = "110110924102205440"
 
+
+BattleTag = make([]string, 0)
+SkillRank = make([]string, 0)
+lines = make([]string, 0)
+
+
 )
-
-
 
 
 func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchanged []string,channel *discordgo.Channel, guild *discordgo.Guild, s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -119,24 +124,84 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 
 			log.Info("!sr has been recieved")
 
-			website := ("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1])
+			fileHandle, _ := os.Open(filepath.FromSlash(gopath+"/bin/skillrank.txt"))
+			defer fileHandle.Close()
+			fileScanner := bufio.NewScanner(fileHandle)
 
-			log.Info("Checking " + website + " for Skill Ranking" )
-			doc, err := goquery.NewDocument(website) 
-			if err != nil {
-				log.Fatal(err)
+			for fileScanner.Scan() {
+				fmt.Println(fileScanner.Text())
+				line := strings.Split(fileScanner.Text(), " ")
+				BattleTag = append(BattleTag, line[0])
+				SkillRank = append(SkillRank, line[1])
+				fmt.Println(BattleTag)
+				fmt.Println(SkillRank)
 			}
-		  	//Thanks to my boy Jake for working this one out.
-		  	doc.Find(".masthead-player-progression:nth-child(3) > div:nth-child(2) > div:nth-child(2)").Each(func(i int, s *goquery.Selection) {
-		    	rank := s.Text()
 
-		    	discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank )
-			})}
+		    doc, err := goquery.NewDocument("https://playoverwatch.com/en-us/career/pc/eu/" + partsunchanged[1]) 
+		    if err != nil {
+		        log.Fatal(err)
+		    }		
+		    doc.Find(".masthead-player-progression:nth-child(3) > div:nth-child(2) > div:nth-child(2)").Each(func(i int, s *goquery.Selection) {
+		        rank := s.Text()
+
+			    for i := range BattleTag {
+			    	fmt.Println(i)
+			    	fmt.Println(BattleTag[i])
+			    	if partsunchanged[1] == BattleTag[i] {
+			    		if rank == SkillRank[i] {
+			    			fmt.Println(SkillRank[i])
+			    			discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank)
+			    			return
+			    		} else {
+			    			newrankint, _ := strconv.Atoi(rank)
+			    			oldrankint, _ := strconv.Atoi(SkillRank[i])
+			    			rankdiff := newrankint - oldrankint 
+			    			fmt.Println("diff:",rankdiff)
+			    			if rankdiff > 0 {
+			    				discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank + " which is " + strconv.Itoa(rankdiff) + " more than last time you checked." )
+			    			} else {
+			    				rankdiff = -rankdiff
+			    				discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank + " which is " + strconv.Itoa(rankdiff) + " less than last time you checked." )			    				
+			    			}
+			    			SkillRank[i] = rank
+			    			for j := range BattleTag {
+			    				skillranklines := BattleTag[j] + " " + SkillRank[j]
+			    				lines = append(lines,skillranklines)
+			    			}
+			    			output := strings.Join(lines, "\n")
+					        err = ioutil.WriteFile((filepath.FromSlash(gopath+"/bin/skillrank.txt")), []byte(output), 0644)
+					        if err != nil {
+					                log.Fatalln(err)
+					        }	    			
+			    			return
+						}	
+					}
+
+				}
+		        appendrank := "\n" + partsunchanged[1] + " "  +  rank 
+
+		        f, err := os.OpenFile(filepath.FromSlash(gopath+"/bin/skillrank.txt"), os.O_APPEND|os.O_WRONLY, 0600)
+		        if err != nil {
+		            panic(err)
+		        }
+
+		        defer f.Close()
+
+		        if _, err = f.WriteString(appendrank); err != nil {
+		            panic(err)
+		        }
+
+			})	
+}
 	case "!uptime":
+
+
         uptimeDur := time.Since(initialTime)
         uptimeDur = Round(uptimeDur, time.Second)
         uptimeDurString := uptimeDur.String()
 		discord.ChannelMessageSend(channel.ID,uptimeDurString)
+
+
 	case "!reloademotes":
 
 		EmoteLookUp()
