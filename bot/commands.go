@@ -98,9 +98,15 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 	case "!help":
 
 		log.Info("!help has been recieved")
-
+        file, err  := os.Open(filepath.FromSlash(gopath+"/bin/commands.txt"))
+	    if err != nil {
+	        panic(err)
+	    }
+        data, _  := ioutil.ReadAll(file)
+        stringdata := fmt.Sprintf("%s", data)
+        file.Close()
 		dm, _ := s.UserChannelCreate(u.ID)
-		s.ChannelMessageSend(dm.ID, "Commands: http://pastebin.com/9xN5MxfT")
+		s.ChannelMessageSend(dm.ID, stringdata)
 
     
 	case "!stop":
