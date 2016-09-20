@@ -48,7 +48,7 @@ func CheckforEmote(u *discordgo.User, partsunchanged []string,channel *discordgo
     				return 
     			}
 	            s.ChannelFileSend(channel.ID ,EmotesExt[j], file)
-	            s.ChannelMessageSend("203630579617366016", (u.Username + " sent " + EmotesExt[j]))
+	            s.ChannelMessageSend(botlogs, (u.Username + " sent " + EmotesExt[j]))
 	            file.Close()
 	            if i == 0 {
 	            	deleteID := m.ID

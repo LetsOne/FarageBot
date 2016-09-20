@@ -32,6 +32,8 @@ var (
     initialTime time.Time
 
 	gopath = os.Getenv("GOPATH")
+
+	botlogs = "203630579617366016"
 )
 
 
@@ -272,13 +274,13 @@ func scontains(key string, options ...string) bool {
 
 func Highnoon() {
 
-	discord.ChannelMessageSend("203630579617366016", "!mcree")
+	discord.ChannelMessageSend(botlogs, "!mcree")
 
 }
 
 func twelveoclock() {
 
-	discord.ChannelMessageSend("203630579617366016", "!twelve")
+	discord.ChannelMessageSend(botlogs, "!twelve")
 
 }
 
@@ -368,6 +370,7 @@ func main() {
 	log.Info(EmotesExt ,  " have been found")
 	// We're running!
 	log.Info("FarageBot is up!")
+	discord.ChannelMessageSend(botlogs, "Time to leave the EU")
     initialTime = time.Now()
     
 	s := gocron.NewScheduler()

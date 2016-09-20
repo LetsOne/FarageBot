@@ -32,19 +32,12 @@ BDate = [...]string{
 archie = "97099676871823360"
 mark = "110110924102205440"
 
-
-BattleTag = make([]string, 0)
-SkillRank = make([]string, 0)
-lines = make([]string, 0)
-Lines = make([]string, 0)
-
-
 )
 
 
 func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchanged []string,channel *discordgo.Channel, guild *discordgo.Guild, s *discordgo.Session, m *discordgo.MessageCreate) {
 
-	s.ChannelMessageSend("203630579617366016",u.Username + " sent " + msg)
+	s.ChannelMessageSend(botlogs ,u.Username + " sent " + msg)
 
 	switch parts[0]{
 
@@ -83,17 +76,20 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
     case "!champ":
 
     	log.Info("!champ has been recieved")
+    	
+    	champlines := make([]string, 0)
+
 		fileHandle, _ := os.Open(filepath.FromSlash(gopath+"/bin/champ.txt"))
 		defer fileHandle.Close()
 		fileScanner := bufio.NewScanner(fileHandle)
 
 		for fileScanner.Scan() {
-			Lines = append(Lines, fileScanner.Text())
+			champlines  = append(champlines , fileScanner.Text())
 		}
 
-		length := len(Lines)
+		length := len(champlines )
 
-		discord.ChannelMessageSend(channel.ID,"The lastest Champion battle:\n\n" + Lines[length-2])	
+		discord.ChannelMessageSend(channel.ID,"The lastest Champion battle:\n\n" + champlines [length-2])	
 
 	case "!help":
 
@@ -145,6 +141,10 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 
 			log.Info("!sr has been recieved")
 
+			BattleTag := make([]string, 0)
+			SkillRank := make([]string, 0)
+			newsrlines := make([]string, 0)
+
 			fileHandle, _ := os.Open(filepath.FromSlash(gopath+"/bin/skillrank.txt"))
 			defer fileHandle.Close()
 			fileScanner := bufio.NewScanner(fileHandle)
@@ -166,8 +166,9 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 		        rank := s.Text()
 
 			    for i := range BattleTag {
-			    	fmt.Println(i)
-			    	fmt.Println(BattleTag[i])
+			    	fmt.Println("BattleTag i: ",i)
+			    	fmt.Println("BattleTag[i]: ",BattleTag[i])
+			    	fmt.Println("partsunchanged[1]: ",partsunchanged[1])
 			    	if partsunchanged[1] == BattleTag[i] {
 			    		if rank == SkillRank[i] {
 			    			fmt.Println(SkillRank[i])
@@ -187,9 +188,9 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 			    			SkillRank[i] = rank
 			    			for j := range BattleTag {
 			    				skillranklines := BattleTag[j] + " " + SkillRank[j]
-			    				lines = append(lines,skillranklines)
+			    				newsrlines = append(newsrlines,skillranklines)
 			    			}
-			    			output := strings.Join(lines, "\n")
+			    			output := strings.Join(newsrlines, "\n")
 					        err = ioutil.WriteFile((filepath.FromSlash(gopath+"/bin/skillrank.txt")), []byte(output), 0644)
 					        if err != nil {
 					                log.Fatalln(err)
@@ -199,6 +200,7 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 					}
 
 				}
+				fmt.Println("No BattleTag Match")
 		        appendrank := "\n" + partsunchanged[1] + " "  +  rank 
 
 		        discord.ChannelMessageSend(channel.ID, partsunchanged[1] + " is Skill Rank " + rank)
@@ -215,7 +217,7 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 		        }
 
 			})	
-}
+	}
 	case "!uptime":
 
 
