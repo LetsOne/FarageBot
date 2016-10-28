@@ -20,12 +20,14 @@ var (
 BName = [...]string{
 
 "Per",
+"Mark",
 
 }
 
 BDate = [...]string{
 
 "8/9",
+"28/10",
 
 }
 
@@ -117,22 +119,25 @@ func CommandsAndSound(u *discordgo.User, msg string, parts []string,partsunchang
 		log.Info("!birthday has been recieved")
 
 		for i := range BDate {
-			log.Info(i)
-        	if BDate[i] == (strconv.Itoa(now.Day())  + "/" + strconv.Itoa(int(now.Month()))) {  
-				log.Info("Happy Birthday "+ BName[i])
-				coll := BIRTHDAYSOUND
-				var sound *Sound
-				go enqueuePlay(m.Author, guild, coll, sound)
-				time.Sleep(200 * time.Millisecond)
-				lcaseBName := strings.ToLower(BName[i])
-				coll = NAME
-				for _, sound = range coll.Sounds {
-					if sound.Name == lcaseBName {
+			for j := 0; j < 8; j++ {
+				log.Info(BDate[i])
+				log.Info(now.Day()+j)
+	        	if BDate[i] == (strconv.Itoa(now.Day()+j)  + "/" + strconv.Itoa(int(now.Month()))) {  
+					log.Info("Happy Birthday "+ BName[i])
+					coll := BIRTHDAYSOUND
+					var sound *Sound
 					go enqueuePlay(m.Author, guild, coll, sound)
-					}
+					time.Sleep(200 * time.Millisecond)
+					lcaseBName := strings.ToLower(BName[i])
+					coll = NAME
+					for _, sound = range coll.Sounds {
+						if sound.Name == lcaseBName {
+						go enqueuePlay(m.Author, guild, coll, sound)
+						}
 
-				}
-           	} 
+					}
+	           	}
+	        } 
         }
 
     case "!sr":
